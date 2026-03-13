@@ -1,19 +1,19 @@
-# 📡 API Documentation — كود أكاديمي
+# API Documentation — Code Academy
 
 Base URL: `http://localhost:5000`
 
 ---
 
-## 🔐 Auth
+## Auth
 
-| Method | Endpoint | الوصف |
-|--------|----------|-------|
-| POST | `/api/auth/register` | إنشاء حساب جديد |
-| POST | `/api/auth/login` | تسجيل الدخول |
-| POST | `/api/auth/logout` | تسجيل الخروج |
-| GET | `/api/auth/me` | بيانات المستخدم الحالي |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/register` | Create account |
+| POST | `/api/auth/login` | Login |
+| POST | `/api/auth/logout` | Logout |
+| GET | `/api/auth/me` | Current user data |
 
-### POST /api/auth/register
+### Register
 ```json
 {
   "username": "Ahmed",
@@ -22,123 +22,110 @@ Base URL: `http://localhost:5000`
 }
 ```
 
-### POST /api/auth/login
+### Login
 ```json
 {
   "email": "ahmed@mail.com",
-  "password": "123456",
-  "remember": true
+  "password": "123456"
 }
 ```
 
 ---
 
-## 📚 Courses
+## Courses
 
-| Method | Endpoint | الوصف |
-|--------|----------|-------|
-| GET | `/api/courses/` | كل الكورسات |
-| GET | `/api/courses/?category=python` | فلترة بالتصنيف |
-| GET | `/api/courses/?level=beginner` | فلترة بالمستوى |
-| GET | `/api/courses/?search=python` | بحث |
-| GET | `/api/courses/<id>` | تفاصيل كورس |
-| POST | `/api/courses/<id>/enroll` | التسجيل في كورس |
-| GET | `/api/courses/<id>/lessons/<id>` | عرض درس |
-| POST | `/api/courses/<id>/lessons/<id>/complete` | تحديد درس كمكتمل |
-| GET | `/api/courses/categories` | كل التصنيفات |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/courses/` | All courses |
+| GET | `/api/courses/?category=python` | Filter by category |
+| GET | `/api/courses/?level=beginner` | Filter by level |
+| GET | `/api/courses/?search=python` | Search |
+| GET | `/api/courses/<id>` | Course details + lessons |
+| POST | `/api/courses/<id>/enroll` | Enroll in course |
+| GET | `/api/courses/<id>/lessons/<id>` | View lesson |
+| POST | `/api/courses/<id>/lessons/<id>/complete` | Mark lesson complete |
+| GET | `/api/courses/categories` | All categories |
 
 ---
 
-## 🧩 Quizzes
+## Quizzes
 
-| Method | Endpoint | الوصف |
-|--------|----------|-------|
-| GET | `/api/quizzes/course/<id>` | اختبارات الكورس |
-| GET | `/api/quizzes/<id>` | تفاصيل اختبار مع الأسئلة |
-| POST | `/api/quizzes/<id>/submit` | تسليم إجابات |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/quizzes/course/<id>` | Course quizzes |
+| GET | `/api/quizzes/<id>` | Quiz details + questions |
+| POST | `/api/quizzes/<id>/submit` | Submit answers |
 
-### POST /api/quizzes/<id>/submit
+### Submit Quiz
 ```json
 {
   "answers": {
-    "1": 3,
-    "2": 7,
-    "3": 12
+    "question_id": "choice_id"
   }
 }
 ```
-(question_id: choice_id)
 
 ---
 
-## 🏆 Certificates
+## Certificates
 
-| Method | Endpoint | الوصف |
-|--------|----------|-------|
-| GET | `/api/certificates/my` | شهاداتي |
-| GET | `/api/certificates/verify/<code>` | التحقق من شهادة (عام) |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/certificates/my` | My certificates |
+| GET | `/api/certificates/verify/<code>` | Verify certificate (public) |
 
 ---
 
-## 👤 Profile
+## Profile
 
-| Method | Endpoint | الوصف |
-|--------|----------|-------|
-| GET | `/api/profile/` | عرض البروفايل |
-| PUT | `/api/profile/` | تعديل البروفايل |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/profile/` | View profile |
+| PUT | `/api/profile/` | Edit profile |
 
-### PUT /api/profile/
+### Edit Profile
 ```json
 {
   "username": "NewName",
-  "bio": "مطور ويب"
+  "bio": "Web Developer"
 }
 ```
 
 ---
 
-## 🏠 General
+## Analytics (Admin only)
 
-| Method | Endpoint | الوصف |
-|--------|----------|-------|
-| GET | `/api/` | الصفحة الرئيسية (كورسات مميزة + إحصائيات) |
-| GET | `/api/health` | التحقق من عمل الـ API |
-
----
-
-## ⚠️ HTTP Status Codes
-
-| Code | المعنى |
-|------|--------|
-| 200 | نجاح |
-| 201 | تم الإنشاء |
-| 400 | بيانات غلط |
-| 401 | مش مسجّل دخول |
-| 403 | مش مصرح ليك |
-| 404 | مش موجود |
-| 409 | موجود بالفعل |
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/analytics/overview` | Platform statistics |
+| GET | `/api/analytics/hardest-courses` | Courses with highest fail rate |
+| GET | `/api/analytics/completion-time` | Average completion time |
 
 ---
 
-## 🔑 Authentication
+## HTTP Status Codes
 
-الـ API بتستخدم **Session-based auth** (Cookies).
-لما تعمل login، الـ session cookie بتتحفظ أوتوماتيكياً.
-الفرونت لازم يبعت `credentials: 'include'` في كل request.
+| Code | Meaning |
+|------|---------|
+| 200 | Success |
+| 201 | Created |
+| 400 | Bad request |
+| 401 | Not logged in |
+| 403 | Forbidden |
+| 404 | Not found |
+| 409 | Already exists |
 
-### مثال في JavaScript:
+---
+
+## Authentication
+
+Uses **Session-based auth**. Frontend must send `credentials: 'include'` in every request.
+
 ```javascript
-// Login
-const res = await fetch('http://localhost:5000/api/auth/login', {
+fetch('http://localhost:5000/api/auth/login', {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
   credentials: 'include',
-  body: JSON.stringify({ email: 'test@mail.com', password: '123456' })
-});
-const data = await res.json();
-
-// Get courses
-const courses = await fetch('http://localhost:5000/api/courses/', {
-  credentials: 'include'
+  body: JSON.stringify({ email: '', password: '' })
 });
 ```
