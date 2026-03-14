@@ -117,3 +117,35 @@ def overview():
         'total_quiz_attempts': total_quiz_attempts,
         'quiz_pass_rate_percent': quiz_pass_rate
     }), 200
+
+
+@analytics_bp.route('/search-history', methods=['GET'])
+@login_required
+@admin_required
+def search_history():
+    """أكتر الكلمات اللي الطلاب بيبحثوا عنها"""
+    from models import SearchHistory
+
+    # Top searched queries
+    top_searches = db.session.query(
+        SearchHistory.query,
+        func.count(SearchHistory.id).label('count'),
+        func.avg(SearchHistory.results_count).label('avg_results')
+    ).group_by(SearchHistory.query) \
+     .order_by(func.count(SearchHistory.id).desc()) \
+     .limit(20) \
+     .all()
+
+    # Recent searches
+    recent = SearchHistory.query.order_by(
+        SearchHistory.searched_at.desc()
+    ).limit(50).all()
+
+    return jsonify({
+        'top_searches': [{
+            'query': r.query,
+            'count': r.count,
+            'avg_results': round(r.avg_results or 0, 1)
+        } for r in top_searches],
+        'recent_searches': [r.to_dict() for r in recent]
+    }), 200

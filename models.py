@@ -330,3 +330,23 @@ class Certificate(db.Model):
                 'thumbnail': self.course.thumbnail
             }
         }
+
+class SearchHistory(db.Model):
+    __tablename__ = 'search_history'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
+    query = db.Column(db.String(200), nullable=False)
+    results_count = db.Column(db.Integer, default=0)
+    searched_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship('User', foreign_keys=[user_id])
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'query': self.query,
+            'results_count': self.results_count,
+            'searched_at': self.searched_at.isoformat(),
+            'user': self.user.username if self.user else 'Guest'
+        }

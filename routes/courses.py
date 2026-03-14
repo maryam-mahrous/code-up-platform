@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_login import login_required, current_user
-from models import db, Course, Lesson, Enrollment, LessonProgress, Category, Certificate
+from models import db, Course, Lesson, Enrollment, LessonProgress, Category, Certificate, SearchHistory
 import secrets
 from datetime import datetime
 
@@ -27,6 +27,18 @@ def list_courses():
         )
 
     courses = query.order_by(Course.created_at.desc()).all()
+
+    # Log search history
+    if search:
+        user_id = current_user.id if current_user.is_authenticated else None
+        log = SearchHistory(
+            user_id=user_id,
+            query=search,
+            results_count=len(courses)
+        )
+        db.session.add(log)
+        db.session.commit()
+
     return jsonify([c.to_dict() for c in courses]), 200
 
 
